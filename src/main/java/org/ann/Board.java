@@ -1,14 +1,22 @@
 package org.ann;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 public class Board {
     private int[] cells = new int[9];
+    private PrintStream printer;
+
+    Board(PrintStream out) {
+         this.printer = out;
+    }
 
     public void printBoard() {
         for (int i = 0; i < 9; i += 3) {
-            System.out.println("-------------");
-            System.out.println("| " + cells[i] + " | " + cells[i+1] + " | " + cells[i+2] + " |");
+            printer.println("-------------");
+            printer.println("| " + cells[i] + " | " + cells[i+1] + " | " + cells[i+2] + " |");
         }
-        System.out.println("-------------");
+        printer.println("-------------");
     }
 
     public boolean isAvailable(int cellNumber) {

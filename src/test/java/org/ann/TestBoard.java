@@ -1,6 +1,6 @@
 package org.ann;
 
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,12 +17,11 @@ import java.io.*;
 public class TestBoard {
     private Board board;
 
-    private final PrintStream standardOut = System.out;
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
 
     @BeforeEach
     public void setUp() {
-        board = new Board();
+        board = new Board(new PrintStream(outputStreamCaptor));
         System.setOut(new PrintStream(outputStreamCaptor));
     }
 

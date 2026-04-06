@@ -3,12 +3,13 @@ package org.ann;
 import java.util.Scanner;
 
 public class Game {
-    private Board board = new Board();
+    private Board board;
     private Player human;
     private Player computer;
     private Player currentPlayer;
 
     public Game(int startArg) {
+        board = new Board(System.out);
         Scanner scanner = new Scanner(System.in);
         human = new HumanPlayer(1, scanner);
         computer = new ComputerPlayer(2);
