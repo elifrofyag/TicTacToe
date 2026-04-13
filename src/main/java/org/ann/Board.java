@@ -19,8 +19,15 @@ public class Board {
         printer.println("-------------");
     }
 
+    public boolean isValidCellNumber(int cellNumber) {
+        if (cellNumber < 1 || cellNumber > 9) {
+            printer.println("Please, input a valid number [1-9]");
+            return false;
+        }
+        return true;
+    }
+
     public boolean isAvailable(int cellNumber) {
-        if (cellNumber < 1 || cellNumber > 9) return false;
         return cells[cellNumber - 1] == 0;
     }
 

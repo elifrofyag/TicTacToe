@@ -7,9 +7,9 @@ public class ComputerPlayer extends Player{
 
     @Override
     public void makeMove(Board board){
-        System.out.println("computer's turn: ");
+        System.out.println("Player#" + this.token+ "'s turn");
 
-        for (int i = 0; i <= 9; i++){
+        for (int i = 1; i <= 9; i++){
             if (board.isAvailable(i)){
                 board.placeMove(i, this.token);
                 break;

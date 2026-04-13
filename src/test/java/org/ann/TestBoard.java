@@ -38,8 +38,13 @@ public class TestBoard {
         board.setUpTestBoard(new int[]{1, 2, 0, 0, 0, 0, 0, 0, 0});
         assertFalse(board.isAvailable(2), "Cell 2 should not be available");
         assertTrue(board.isAvailable(3), "Cell 3 should be available");
-        assertFalse(board.isAvailable(0), "Cell 0 should not be available (out of bounds)");
-        assertFalse(board.isAvailable(10), "Cell 10 should not be available (out of bounds)");
+    }
+
+    //unit test: check if the board isValidCellNumber correctly identifies valid and invalid cell numbers
+    @Test
+    public void testIsValidCellNumber(){
+        assertFalse(board.isValidCellNumber(0), "Cell 0 should not be available (out of bounds)");
+        assertFalse(board.isValidCellNumber(10), "Cell 10 should not be available (out of bounds)");
     }
 
     // unit test: check if the board isFull correctly identifies when the board is full and when it is not
