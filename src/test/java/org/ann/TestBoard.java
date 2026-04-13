@@ -22,7 +22,6 @@ public class TestBoard {
     @BeforeEach
     public void setUp() {
         board = new Board(new PrintStream(outputStreamCaptor));
-        System.setOut(new PrintStream(outputStreamCaptor));
     }
 
     // unit test: check if the board makeMove correctly updates the corresponding cell with the player's token

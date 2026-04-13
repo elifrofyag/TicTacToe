@@ -11,7 +11,7 @@ public class TestHumanPlayer {
 
     @BeforeEach
     public void setUp(){
-        board = new Board();
+        board = new Board(System.out);
     }
 
     /**
@@ -25,7 +25,7 @@ public class TestHumanPlayer {
 
     @Test
     public void testMakeMove_ValidInputFirstTry() {
-        Scanner mock = createMockScanner("5\n");
+        Scanner mock = createMockScanner("5" + System.lineSeparator());
         HumanPlayer human = new HumanPlayer(1, mock);
 
         human.makeMove(board);
@@ -40,7 +40,7 @@ public class TestHumanPlayer {
         // Arrange: Pre-fill cell 5 so it's taken
         board.placeMove(5, 2);
 
-        Scanner fakeKeyboard = createMockScanner("5\n3\n");
+        Scanner fakeKeyboard = createMockScanner("5" + System.lineSeparator()+ "3" + System.lineSeparator());
         HumanPlayer human = new HumanPlayer(1, fakeKeyboard);
 
         human.makeMove(board);
