@@ -17,23 +17,29 @@ public class Game {
     }
 
     public void start() {
+        System.out.println("Hello!");
         board.printBoard();
-        while (true) {
-            currentPlayer.makeMove(board);
-            board.printBoard();
 
-            int winner = board.checkWinner();
-            if (winner != 0) {
-                System.out.println(winner == 1 ? "user won!" : "computer won!");
-                break;
+        Thread gameThread = new Thread(() -> {
+            while (true) {
+                currentPlayer.makeMove(board);
+                board.printBoard();
+
+                int winner = board.checkWinner();
+                if (winner != 0) {
+                    System.out.println(winner == 1 ? "Player#1 won!" : "Player#2 won!");
+                    break;
+                }
+
+                if (board.isFull()) {
+                    System.out.println("It is a draw!");
+                    break;
+                }
+
+                currentPlayer = (currentPlayer == human) ? computer : human;
             }
+        });
+        gameThread.start();
 
-            if (board.isFull()) {
-                System.out.println("a draw!");
-                break;
-            }
-
-            currentPlayer = (currentPlayer == human) ? computer : human;
-        }
     }
 }
