@@ -14,9 +14,20 @@ public class HumanPlayer extends Player{
     public void makeMove(Board board) {
         while (true) {
             System.out.println("Player#" + this.token + "'s turn");
-            if (scanner.hasNextInt()) {
-                int move = scanner.nextInt();
+
+            String input = scanner.nextLine().trim();
+            if (input.equals("q")) {
+                System.out.println("End of the game");
+                System.exit(0);
+            }
+            if (input.isEmpty()) {
+                continue;
+            }
+
+            try {
+                int move = Integer.parseInt(input);
                 if (!board.isValidCellNumber(move)){
+                    System.out.println("Please, input a valid number [1-9]");
                     continue;
                 }
                 if (board.isAvailable(move)) {
@@ -25,9 +36,8 @@ public class HumanPlayer extends Player{
                 } else {
                     System.out.println("The cell is occupied!");
                 }
-            } else {
+            } catch (NumberFormatException e) {
                 System.out.println("Please, input a valid number [1-9]");
-                scanner.next();
             }
         }
     }
