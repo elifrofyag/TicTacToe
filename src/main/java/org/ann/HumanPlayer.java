@@ -13,8 +13,13 @@ public class HumanPlayer extends Player{
     @Override
     public boolean makeMove(Board board) {
         while (true) {
-
-            String input = scanner.nextLine().trim();
+            String input;
+            try {
+                input = scanner.nextLine().trim();
+            } catch (Exception e) {
+                System.out.println("unexpected exception while reading human input");
+                continue;
+            }
             if (input.equals("q")) {
                 System.out.println("End of the game");
                 return false;
@@ -26,7 +31,6 @@ public class HumanPlayer extends Player{
             try {
                 int move = Integer.parseInt(input);
                 if (!board.isValidCellNumber(move)){
-                    System.out.println("Please, input a valid number [1-9]");
                     continue;
                 }
                 if (board.isAvailable(move)) {
