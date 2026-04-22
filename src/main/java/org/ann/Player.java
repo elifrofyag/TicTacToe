@@ -11,5 +11,5 @@ public abstract class Player {
         return token;
     }
 
-    public abstract void makeMove(Board board);
+    public abstract boolean makeMove(Board board);
 }

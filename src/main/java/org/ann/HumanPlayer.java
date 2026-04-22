@@ -11,14 +11,13 @@ public class HumanPlayer extends Player{
     }
 
     @Override
-    public void makeMove(Board board) {
+    public boolean makeMove(Board board) {
         while (true) {
-            System.out.println("Player#" + this.token + "'s turn");
 
             String input = scanner.nextLine().trim();
             if (input.equals("q")) {
                 System.out.println("End of the game");
-                System.exit(0);
+                return false;
             }
             if (input.isEmpty()) {
                 continue;
@@ -40,6 +39,7 @@ public class HumanPlayer extends Player{
                 System.out.println("Please, input a valid number [1-9]");
             }
         }
+        return true;
     }
 }
 

@@ -20,26 +20,31 @@ public class Game {
         System.out.println("Hello!");
         board.printBoard();
 
-        Thread gameThread = new Thread(() -> {
+//        Thread gameThread = new Thread(() -> {
             while (true) {
-                currentPlayer.makeMove(board);
+                System.out.println("Player#" + currentPlayer.token + "'s turn");
+
+                boolean shouldContinue = currentPlayer.makeMove(board);
+                if (!shouldContinue) {
+                    return;
+                }
                 board.printBoard();
 
                 int winner = board.checkWinner();
                 if (winner != 0) {
                     System.out.println(winner == 1 ? "Player#1 won!" : "Player#2 won!");
-                    break;
+                    return;
                 }
 
                 if (board.isFull()) {
                     System.out.println("It is a draw!");
-                    break;
+                    return;
                 }
 
                 currentPlayer = (currentPlayer == human) ? computer : human;
             }
-        });
-        gameThread.start();
+//        });
+//        gameThread.start();
 
     }
 }
