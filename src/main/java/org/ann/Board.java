@@ -13,10 +13,8 @@ public class Board {
 
     public void printBoard() {
         for (int i = 0; i < 9; i += 3) {
-            printer.println("-------------");
             printer.println("| " + cells[i] + " | " + cells[i+1] + " | " + cells[i+2] + " |");
         }
-        printer.println("-------------");
     }
 
     public boolean isValidCellNumber(int cellNumber) {

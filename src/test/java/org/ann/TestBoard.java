@@ -113,14 +113,10 @@ public class TestBoard {
 
         board.printBoard();
         String nl = System.lineSeparator();
-        String expectedOutput = "-------------" + nl +
+        String expectedOutput =
                 "| 1 | 0 | 0 |" + nl +
-                "-------------" + nl +
                 "| 0 | 2 | 0 |" + nl +
-                "-------------" + nl +
-                "| 0 | 0 | 1 |" + nl +
-                "-------------" + nl;
-
+                "| 0 | 0 | 1 |" + nl ;
         assertEquals(expectedOutput, outputStreamCaptor.toString());
     }
 
