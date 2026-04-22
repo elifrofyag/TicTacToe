@@ -374,24 +374,24 @@ public class TestAppBlackBox {
         assertNull(reader.readLine());
     }
 
-//    class BrokenInputStream extends InputStream {
-//        @Override
-//        public int read() throws IOException {
-//            throw new IOException("input stream failure");
-//        }
-//    }
-//
-//    @Test
-//    public void testInputStreamFailure() throws IOException {
-//        System.setIn(new BrokenInputStream());
-//        App.main(new String[]{"1"});
-//        BufferedReader reader = getOutputReader();
-//
-//        skipLines(4, reader);
-//        assertEquals("Player#1's turn", reader.readLine());
-//        assertEquals("unexpected exception while reading human input", reader.readLine());
-//        assertNull(reader.readLine());
-//    }
+    class BrokenInputStream extends InputStream {
+        @Override
+        public int read() throws IOException {
+            throw new IOException("input stream failure");
+        }
+    }
+
+    @Test
+    public void testInputStreamFailure() throws IOException {
+        System.setIn(new BrokenInputStream());
+        App.main(new String[]{"1"});
+        BufferedReader reader = getOutputReader();
+
+        skipLines(4, reader);
+        assertEquals("Player#1's turn", reader.readLine());
+        assertEquals("unexpected exception while reading human input", reader.readLine());
+        assertNull(reader.readLine());
+    }
 
 
     void skipLines(int number, BufferedReader reader) throws IOException {

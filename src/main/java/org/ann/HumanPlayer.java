@@ -1,4 +1,5 @@
 package org.ann;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class HumanPlayer extends Player{
@@ -16,9 +17,9 @@ public class HumanPlayer extends Player{
             String input;
             try {
                 input = scanner.nextLine().trim();
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 System.out.println("unexpected exception while reading human input");
-                continue;
+                return false;
             }
             if (input.equals("q")) {
                 System.out.println("End of the game");
