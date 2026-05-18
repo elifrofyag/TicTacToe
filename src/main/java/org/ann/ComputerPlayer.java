@@ -1,8 +1,10 @@
 package org.ann;
 
+import java.io.PrintStream;
+
 public class ComputerPlayer extends Player{
-    public ComputerPlayer (int token){
-        super(token);
+    public ComputerPlayer (int token, PrintStream out) {
+        super(token, out);
     }
 
     @Override

@@ -7,7 +7,7 @@ public class App {
                 System.out.println("Please, input a valid option [1-2]");
                 return;
         }
-        Game game = new Game(Integer.parseInt(args[0]));
+        Game game = new Game(Integer.parseInt(args[0]), new java.util.Scanner(System.in), System.out);
         game.start();
     }
 }

@@ -26,7 +26,7 @@ public class TestHumanPlayer {
     @Test
     public void testMakeMove_ValidInputFirstTry() {
         Scanner mock = createMockScanner("5" + System.lineSeparator());
-        HumanPlayer human = new HumanPlayer(1, mock);
+        HumanPlayer human = new HumanPlayer(1, mock, System.out);
 
         human.makeMove(board);
 
@@ -41,7 +41,7 @@ public class TestHumanPlayer {
         board.placeMove(5, 2);
 
         Scanner fakeKeyboard = createMockScanner("5" + System.lineSeparator()+ "3" + System.lineSeparator());
-        HumanPlayer human = new HumanPlayer(1, fakeKeyboard);
+        HumanPlayer human = new HumanPlayer(1, fakeKeyboard, System.out);
 
         human.makeMove(board);
 
@@ -52,7 +52,7 @@ public class TestHumanPlayer {
     @Test
     public void testMakeMove_OutOfBoundsThenValidMove() {
         Scanner fakeKeyboard = createMockScanner("15\n-2\n9\n");
-        HumanPlayer human = new HumanPlayer(1, fakeKeyboard);
+        HumanPlayer human = new HumanPlayer(1, fakeKeyboard, System.out);
 
         human.makeMove(board);
 
@@ -63,7 +63,7 @@ public class TestHumanPlayer {
     @Test
     public void testMakeMove_TextInputThenValidMove() {
         Scanner fakeKeyboard = createMockScanner("hello\n1\n");
-        HumanPlayer human = new HumanPlayer(1, fakeKeyboard);
+        HumanPlayer human = new HumanPlayer(1, fakeKeyboard, System.out);
         human.makeMove(board);
 
         assertFalse(board.isAvailable(1), "Cell 1 should be occupied after recovering from string input");
@@ -77,7 +77,7 @@ public class TestHumanPlayer {
         board.placeMove(2, 1);
 
         Scanner fakeKeyboard = createMockScanner("3\n");
-        HumanPlayer human = new HumanPlayer(1, fakeKeyboard);
+        HumanPlayer human = new HumanPlayer(1, fakeKeyboard, System.out);
 
         human.makeMove(board);
 

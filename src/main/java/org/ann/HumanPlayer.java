@@ -1,13 +1,14 @@
 package org.ann;
-import java.io.IOException;
+
 import java.util.Scanner;
+import java.io.PrintStream;
 
 public class HumanPlayer extends Player{
 
     private Scanner scanner;
 
-    public HumanPlayer(int token, Scanner scanner) {
-        super(token);
+    public HumanPlayer(int token, Scanner scanner, PrintStream out) {
+        super(token, out);
         this.scanner = scanner;
     }
 
@@ -15,6 +16,7 @@ public class HumanPlayer extends Player{
     public boolean makeMove(Board board) {
         while (true) {
             String input;
+            out.println("[TURN_PROMPT]");
             try {
                 input = scanner.nextLine().trim();
             } catch (RuntimeException e) {

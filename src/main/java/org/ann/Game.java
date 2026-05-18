@@ -1,5 +1,6 @@
 package org.ann;
 
+import java.io.PrintStream;
 import java.util.Scanner;
 
 public class Game {
@@ -7,22 +8,23 @@ public class Game {
     private Player human;
     private Player computer;
     private Player currentPlayer;
+    private PrintStream out;
 
-    public Game(int startArg) {
-        board = new Board(System.out);
-        Scanner scanner = new Scanner(System.in);
-        human = new HumanPlayer(1, scanner);
-        computer = new ComputerPlayer(2);
+    public Game(int startArg, Scanner in, PrintStream out) {
+        this.out = out;
+        board = new Board(out);
+        human = new HumanPlayer(1, in, out);
+        computer = new ComputerPlayer(2, out);
         currentPlayer = (startArg == 1) ? human : computer;
     }
 
     public void start() {
-        System.out.println("Hello!");
+        out.println("Hello!");
         board.printBoard();
 
 //        Thread gameThread = new Thread(() -> {
             while (true) {
-                System.out.println("Player#" + currentPlayer.token + "'s turn");
+                out.println("Player#" + currentPlayer.token + "'s turn");
 
                 boolean shouldContinue = currentPlayer.makeMove(board);
                 if (!shouldContinue) {
@@ -32,12 +34,14 @@ public class Game {
 
                 int winner = board.checkWinner();
                 if (winner != 0) {
-                    System.out.println(winner == 1 ? "Player#1 won!" : "Player#2 won!");
+                    out.println(winner == 1 ? "Player#1 won!" : "Player#2 won!");
+                    out.println("[GAME_OVER]");
                     return;
                 }
 
                 if (board.isFull()) {
-                    System.out.println("It is a draw!");
+                    out.println("It is a draw!");
+                    out.println("[GAME_OVER]");
                     return;
                 }
 
