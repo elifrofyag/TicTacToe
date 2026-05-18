@@ -20,11 +20,11 @@ public class HumanPlayer extends Player{
             try {
                 input = scanner.nextLine().trim();
             } catch (RuntimeException e) {
-                System.out.println("unexpected exception while reading human input");
+                out.println("unexpected exception while reading human input");
                 return false;
             }
             if (input.equals("q")) {
-                System.out.println("End of the game");
+                out.println("End of the game");
                 return false;
             }
             if (input.isEmpty()) {
@@ -40,10 +40,10 @@ public class HumanPlayer extends Player{
                     board.placeMove(move, this.token);
                     break;
                 } else {
-                    System.out.println("The cell is occupied!");
+                    out.println("The cell is occupied!");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Please, input a valid number [1-9]");
+                out.println("Please, input a valid number [1-9]");
             }
         }
         return true;
