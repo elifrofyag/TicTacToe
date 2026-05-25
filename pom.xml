@@ -55,7 +55,7 @@
                         <configuration>
                             <classifier>server</classifier> <archive>
                             <manifest>
-                                <mainClass>org.ann.ServerApp</mainClass>
+                                <mainClass>org.ann.MultiUserSingleThreadServerApp</mainClass>
                             </manifest>
                         </archive>
                         </configuration>
@@ -70,7 +70,7 @@
                         <configuration>
                             <classifier>client</classifier> <archive>
                             <manifest>
-                                <mainClass>org.ann.ClientApp</mainClass>
+                                <mainClass>org.ann.MultiUserSingleThreadClientApp</mainClass>
                             </manifest>
                         </archive>
                         </configuration>

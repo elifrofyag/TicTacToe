@@ -62,5 +62,23 @@ public class Board {
         return cells[cellNumber - 1];
     }
 
+    // convert board array into a comma-separated string
+    public String serialize() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < cells.length; i++) {
+            sb.append(cells[i]);
+            if (i < cells.length - 1) sb.append(",");
+        }
+        return sb.toString();
+    }
+
+    // convert comma-separated string back into board array
+    public void deserialize(String data) {
+        String[] parts = data.split(",");
+        for (int i = 0; i < 9; i++) {
+            cells[i] = Integer.parseInt(parts[i]);
+        }
+    }
+
 
 }
