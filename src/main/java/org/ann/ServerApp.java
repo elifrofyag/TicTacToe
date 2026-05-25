@@ -5,32 +5,53 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ServerApp {
-    public static void main(String[] args) {
-//        if (args.length != 1 || (!args[0].equals("1") && !args[0].equals("2"))) {
-//            System.out.println("Please, input a valid option [1-2]");
-//            return;
-//        }
-        int port = 8080;
+    private static final int PORT = 8080;
+    private static final int MAX_THREADS = 3;
 
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("server started on port " + port + " waiting for client");
+    public static void main(String[] args) {
+        ExecutorService pool = Executors.newFixedThreadPool(MAX_THREADS);
+
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("server started on PORT " + PORT + " waiting for client");
             while (true){
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("client connected from " + clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort());
+                System.out.println("client connected from " +
+                        clientSocket.getInetAddress().getHostAddress()
+                        + ":" + clientSocket.getPort());
 
-                Scanner networkIn = new Scanner(clientSocket.getInputStream());
-                PrintStream networkOut = new PrintStream(clientSocket.getOutputStream(), true);
-
-                Game game = new Game(1, networkIn, networkOut);
-                game.start();
-
-                clientSocket.close();
-                System.out.println("client disconnected");
+                pool.execute(new ClientHandler(clientSocket));
             }
         } catch (IOException e) {
             System.out.println("Server Error: " + e.getMessage());
+        } finally {
+            pool.shutdown();
+        }
+    }
+}
+
+class ClientHandler implements Runnable {
+    private final Socket socket;
+
+    public ClientHandler(Socket socket) {
+        this.socket = socket;
+    }
+
+    @Override
+    public void run() {
+        try (
+                Scanner networkIn = new Scanner(socket.getInputStream());
+                PrintStream networkOut = new PrintStream(socket.getOutputStream(), true)
+        ) {
+            Game game = new Game(1, networkIn, networkOut);
+            game.start();
+            socket.close();
+            System.out.println("client "+ socket.getInetAddress()+":"+socket.getPort()+" disconnected");
+        } catch (IOException e) {
+            System.out.println("client error: " + e.getMessage());
         }
     }
 }
