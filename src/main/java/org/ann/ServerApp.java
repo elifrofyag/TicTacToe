@@ -8,26 +8,27 @@ import java.util.Scanner;
 
 public class ServerApp {
     public static void main(String[] args) {
-        if (args.length != 1 || (!args[0].equals("1") && !args[0].equals("2"))) {
-            System.out.println("Please, input a valid option [1-2]");
-            return;
-        }
+//        if (args.length != 1 || (!args[0].equals("1") && !args[0].equals("2"))) {
+//            System.out.println("Please, input a valid option [1-2]");
+//            return;
+//        }
         int port = 8080;
+
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server started on port " + port + "waiting for client");
+            System.out.println("server started on port " + port + " waiting for client");
+            while (true){
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("client connected from " + clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort());
 
-            Socket clientSocket = serverSocket.accept();
-            System.out.println("client connected! starting game");
+                Scanner networkIn = new Scanner(clientSocket.getInputStream());
+                PrintStream networkOut = new PrintStream(clientSocket.getOutputStream(), true);
 
-            Scanner networkIn = new Scanner(clientSocket.getInputStream());
-            PrintStream networkOut = new PrintStream(clientSocket.getOutputStream(), true);
+                Game game = new Game(1, networkIn, networkOut);
+                game.start();
 
-            Game game = new Game(Integer.parseInt(args[0]), networkIn, networkOut);
-            game.start();
-
-            clientSocket.close();
-            System.out.println("game over. server shuts down");
-
+                clientSocket.close();
+                System.out.println("client disconnected");
+            }
         } catch (IOException e) {
             System.out.println("Server Error: " + e.getMessage());
         }
