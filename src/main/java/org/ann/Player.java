@@ -10,6 +10,9 @@ public abstract class Player {
         this.token = token;
         this.out = out;
     }
+    public Player(int token){
+        this.token = token;
+    }
 
     public int getToken() {
         return token;

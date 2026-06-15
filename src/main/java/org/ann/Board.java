@@ -6,9 +6,11 @@ public class Board {
     private int[] cells = new int[9];
     private PrintStream printer;
 
-    Board(PrintStream out) {
+    public Board(PrintStream out) {
          this.printer = out;
     }
+
+    public Board(){}
 
     public void printBoard() {
         for (int i = 0; i < 9; i += 3) {
