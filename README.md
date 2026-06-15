@@ -27,3 +27,21 @@ A simple implementation of the classic Tic Tac Toe game in Java, serving a sole 
     java -jar target/TicTacToe-0.4-SNAPSHOT-client.jar
     ```
 4. Follow the prompts in the client terminal to play the game.
+
+## HTTPServer and HTTPClient
+
+Test on powershell with:
+```bash
+  curl.exe -X POST http://localhost:8080/play -H "Content-Type: application/json" -d '{\"action\": \"START\"}'
+```
+expected: `{"status":"CONTINUE","boardState":"0,0,0,0,0,0,0,0,0"}`
+
+```bash
+  curl.exe -X POST http://localhost:8080/play -H "Content-Type: application/json" -d '{\"action\": \"MOVE\", \"boardState\": \"0,0,0,0,0,0,0,0,0\", \"move\": 5}'
+```
+expected: `{"status":"CONTINUE","boardState":"2,0,0,0,1,0,0,0,0"}`
+
+```bash
+  curl.exe -X POST http://localhost:8080/play -H "Content-Type: application/json" -d '{\"action\": \"MOVE\", \"boardState\": \"0,0,0,0,1,0,2,0,0\", \"move\": 7}'
+```
+expected:`{"status":"INVALID_MOVE","boardState":"0,0,0,0,1,0,2,0,0"}`

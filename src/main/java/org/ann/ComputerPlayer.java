@@ -7,6 +7,10 @@ public class ComputerPlayer extends Player{
         super(token, out);
     }
 
+    public ComputerPlayer(int token){
+        super(token);
+    }
+
     @Override
     public boolean makeMove(Board board){
         for (int i = 1; i <= 9; i++){
