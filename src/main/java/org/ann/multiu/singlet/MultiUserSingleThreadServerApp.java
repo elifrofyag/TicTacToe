@@ -1,4 +1,7 @@
-package org.ann;
+package org.ann.multiu.singlet;
+
+import org.ann.Board;
+import org.ann.ComputerPlayer;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -6,6 +9,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+/**
+ * single thread server app to handle multiple users at the "same" time
+ * this version, user created the initial board, so there is no "START" protocol
+ *
+ * @ see org.ann.http.Server and Client for the version where user send "START" and server init the board.
+ */
 public class MultiUserSingleThreadServerApp {
     public static void main(String[] args){
         int port = 8080;

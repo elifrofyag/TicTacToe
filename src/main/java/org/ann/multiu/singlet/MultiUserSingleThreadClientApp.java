@@ -1,4 +1,6 @@
-package org.ann;
+package org.ann.multiu.singlet;
+
+import org.ann.Board;
 
 import java.io.PrintStream;
 import java.net.Socket;

@@ -1,4 +1,7 @@
-package org.ann;
+package org.ann.secure;
+
+import org.ann.Board;
+import org.ann.ComputerPlayer;
 
 import java.io.IOException;
 import java.io.PrintStream;

@@ -1,4 +1,6 @@
-package org.ann;
+package org.ann.ogclientserver;
+
+import org.ann.Game;
 
 import java.io.IOException;
 import java.io.PrintStream;

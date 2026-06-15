@@ -1,10 +1,12 @@
-package org.ann;
+package org.ann.secure;
+
+import org.ann.Board;
 
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class SecureClientApp {
+public class AntiReplaySecureClientApp {
     private static final String HOST = "127.0.0.1";
     private static int PORT = 8080;
 
@@ -13,6 +15,8 @@ public class SecureClientApp {
         Board localBoard = new Board(System.out);
 
         String currentSignature = "";
+        String currentNonce = "";
+        String currentDeadline ="";
 
         System.out.println("Hello!");
 
@@ -24,8 +28,10 @@ public class SecureClientApp {
 
         String[] initParts = initResponse.split(";");
         // initParts[0] is "CONTINUE"
-        localBoard.deserialize(initParts[1]); // The initial 0,0... board
-        currentSignature = initParts[2];      // The initial signature
+        localBoard.deserialize(initParts[1]);
+        currentDeadline = initParts[2];
+        currentNonce = initParts[3];
+        currentSignature = initParts[4];
 
         localBoard.printBoard();
 
@@ -43,26 +49,36 @@ public class SecureClientApp {
                 if (!localBoard.isValidCellNumber(move)) {
                     continue;
                 }
-
                 if (!localBoard.isAvailable(move)) {
                     System.out.println("The cell is occupied!");
                     continue;
                 }
-                String request = localBoard.serialize() + ";" + move + ";" + currentSignature;
+                String request = localBoard.serialize() + ";" + move + ";" + currentDeadline + ";" + currentNonce + ";" + currentSignature;
                 String response = sendRequestToServer(request);
 
                 //parse response and update local board
                 String[] parts = response.split(";");
                 String status = parts[0];
+
                 if (status.equals("CHEATER_DETECTED")) {
-                    System.out.println("Server rejected the move: Security token mismatch!");
+                    System.out.println("Server rejected move: security token mismatch!");
                     break loop;
+                } else if (status.equals("TIMEOUT")){
+                    System.out.println("you took longer than 10 sec. game over");
+                    break loop;
+                } else if (status.equals("REPLAY_ATTACK")){
+                    System.out.println("sever rejected move: replay attack detected!");
+                    break loop;
+                } else if (status.equals("INVALID_MOVE")){
+                    System.out.println("server rejected move: cell is occupied or invalid ");
                 }
 
                 String boardState = parts[1];
                 localBoard.deserialize(boardState);
 
-                currentSignature = parts[2];
+                currentDeadline = parts[2];
+                currentNonce = parts[3];
+                currentSignature = parts[4];
 
                 localBoard.printBoard();
 
@@ -80,8 +96,6 @@ public class SecureClientApp {
             } catch (NumberFormatException e) {
                 System.out.println("Please, input a valid number [1-9]");
             }
-
-
         }
     }
 
@@ -90,17 +104,18 @@ public class SecureClientApp {
              Scanner in = new Scanner(socket.getInputStream());
              PrintStream out = new PrintStream(socket.getOutputStream(), true)) {
 
+            System.out.println("sent: " + request);
             out.println(request);
             if (in.hasNextLine()) {
                 return in.nextLine();
             } else {
                 System.out.println("No response from server.");
-                return "ERROR;0,0,0,0,0,0,0,0,0;null";
-            }
+                return "ERROR;0,0,0,0,0,0,0,0,0;0;null;null";            }
         } catch (Exception e) {
             System.out.println("Error communicating with server: " + e.getMessage());
         }
-        return "ERROR;0,0,0,0,0,0,0,0,0;null";
-
+        return "ERROR;0,0,0,0,0,0,0,0,0;0;null;null";
     }
 }
+
+
