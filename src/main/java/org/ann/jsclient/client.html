@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tic tac toe web client</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        #status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 20px;
+            height: 30px;
+        }
+
+        .tic-tac-toe-table {
+            border-collapse: collapse;
+            background-color: #fff;
+            overflow: hidden;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #ddd;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .cell:hover {
+            background-color: #f0f2f5;
+        }
+
+        .cell.human { color: #2ecc71; }    /* Green for 1 */
+        .cell.computer { color: #e74c3c; } /* Red for 2 */
+        .cell.empty { color: #bdc3c7; }    /* Gray for 0 */
+
+        button {
+            margin-top: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<h1>tic tac toe</h1>
+<div id="status">click "start new game"</div>
+
+<table class="tic-tac-toe-table">
+    <tr>
+        <td class="cell empty" data-cell="1">0</td>
+        <td class="cell empty" data-cell="2">0</td>
+        <td class="cell empty" data-cell="3">0</td>
+    </tr>
+    <tr>
+        <td class="cell empty" data-cell="4">0</td>
+        <td class="cell empty" data-cell="5">0</td>
+        <td class="cell empty" data-cell="6">0</td>
+    </tr>
+    <tr>
+        <td class="cell empty" data-cell="7">0</td>
+        <td class="cell empty" data-cell="8">0</td>
+        <td class="cell empty" data-cell="9">0</td>
+    </tr>
+</table>
+
+<button id="start-btn">start new game</button>
+
+<script>
+    const SERVER_URL = 'http://localhost:8080/play';
+
+    // App State
+    let currentBoardState = "0,0,0,0,0,0,0,0,0";
+    let isGameActive = false;
+
+    // DOM Elements
+    const statusDisplay = document.getElementById('status');
+    const startButton = document.getElementById('start-btn');
+    const cells = document.querySelectorAll('.cell');
+
+    // --- CALLBACK: Handlers & Listeners ---
+
+    // Setup individual click event listeners for each of the 9 cells
+    cells.forEach(cell => {
+        cell.addEventListener('click', () => {
+            const cellIndex = parseInt(cell.getAttribute('data-cell'));
+            handlePlayerMove(cellIndex);
+        });
+    });
+
+    startButton.addEventListener('click', initializeGame);
+
+    // --- FUNCTIONS ---
+
+    // Initializes a clean game session with the backend
+    async function initializeGame() {
+        statusDisplay.textContent = "Connecting to server...";
+
+        const payload = { action: "START", boardState: null, move: 0 };
+        const data = await sendRequest(payload);
+
+        if (data) {
+            currentBoardState = data.boardState;
+            isGameActive = true;
+            statusDisplay.textContent = "your turn! select an empty cell";
+            updateUI();
+        }
+    }
+
+    // Processes human clicks and fires off the MOVE action
+    async function handlePlayerMove(cellIndex) {
+        if (!isGameActive) return;
+
+        // Optional client-side verification to prevent wasted networking traffic
+        const boardArray = currentBoardState.split(',');
+        if (boardArray[cellIndex - 1] !== "0") {
+            statusDisplay.textContent = "cell is occupied! try another one";
+            return;
+        }
+
+        statusDisplay.textContent = "Processing move...";
+
+        const payload = {
+            action: "MOVE",
+            boardState: currentBoardState,
+            move: cellIndex
+        };
+
+        const data = await sendRequest(payload);
+        if (!data) return;
+
+        currentBoardState = data.boardState;
+        updateUI();
+        handleGameStatus(data.status);
+    }
+
+    // --- ASYNC NETWORK CALL: Fetch API ---
+    async function sendRequest(payload) {
+        try {
+            const response = await fetch(SERVER_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error("Network communication failed:", error);
+            statusDisplay.textContent = "Error communicating with server";
+            isGameActive = false;
+            return null;
+        }
+    }
+
+    // Synchronizes the local visual display table with the backend array state
+    function updateUI() {
+        const tokens = currentBoardState.split(',');
+        cells.forEach((cell, index) => {
+            const tokenValue = tokens[index];
+            cell.textContent = tokenValue;
+
+            // Strip old token color styles
+            cell.className = "cell";
+
+            // Map styling categories explicitly to match target constraints
+            if (tokenValue === "1") {
+                cell.classList.add('human');
+            } else if (tokenValue === "2") {
+                cell.classList.add('computer');
+            } else {
+                cell.classList.add('empty');
+            }
+        });
+    }
+
+    // Evaluates application phase switches sent by the GameResponse model
+    function handleGameStatus(status) {
+        switch (status) {
+            case "WIN_HUMAN":
+                statusDisplay.textContent = "Congratulations! You won!";
+                isGameActive = false;
+                break;
+            case "WIN_COMPUTER":
+                statusDisplay.textContent = "Game Over! Computer won!";
+                isGameActive = false;
+                break;
+            case "DRAW":
+                statusDisplay.textContent = "It's a draw!";
+                isGameActive = false;
+                break;
+            case "INVALID_MOVE":
+                statusDisplay.textContent = "Invalid move attempt rejected by server.";
+                break;
+            case "CONTINUE":
+                statusDisplay.textContent = "Player#1's turn";
+                break;
+            default:
+                statusDisplay.textContent = "Unknown game state status received.";
+        }
+    }
+</script>
+</body>
+</html>
