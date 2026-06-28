@@ -3,7 +3,9 @@ package org.ann;
 import java.io.PrintStream;
 
 public class Board {
-    private int[] cells = new int[9];
+    public static final int SIZE = 4;
+
+    private int[] cells = new int[SIZE * SIZE];
     private PrintStream printer;
 
     public Board(PrintStream out) {
@@ -13,13 +15,17 @@ public class Board {
     public Board(){}
 
     public void printBoard() {
-        for (int i = 0; i < 9; i += 3) {
-            printer.println("| " + cells[i] + " | " + cells[i+1] + " | " + cells[i+2] + " |");
+        for(int i = 0; i < SIZE; i++){
+            for (int j = 0; j < SIZE; j++) {
+                int cellValue = cells[i * SIZE + j];
+                printer.print(" | " + cellValue);
+            }
+            printer.println(" | ");
         }
     }
 
     public boolean isValidCellNumber(int cellNumber) {
-        if (cellNumber < 1 || cellNumber > 9) {
+        if (cellNumber < 1 || cellNumber > SIZE*SIZE) {
             printer.println("Please, input a valid number [1-9]");
             return false;
         }
@@ -42,18 +48,63 @@ public class Board {
     }
 
     public int checkWinner() {
-        int[][] winConditions = {
-                {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
-                {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
-                {0, 4, 8}, {2, 4, 6}
-        };
+        // check row
+        for (int i = 0; i < SIZE; i++) {
+            int firstCell = cells[i * SIZE];
+            if (firstCell == 0) continue;
 
-        for (int[] w : winConditions) {
-            if (cells[w[0]] != 0 && cells[w[0]] == cells[w[1]] && cells[w[0]] == cells[w[2]]) {
-                return cells[w[0]];
+            boolean win = true;
+            for (int j = 1; j < SIZE; j++) {
+                if (cells[i * SIZE + j] != firstCell) {
+                    win = false;
+                    break;
+                }
             }
+            if (win) return firstCell;
         }
-        return 0;
+
+        // check col
+        for (int j = 0; j < SIZE; j++) {
+            int firstCell = cells[j];
+            if (firstCell == 0) continue;
+
+            boolean win = true;
+            for (int i = 1; i < SIZE; i++) {
+                if (cells[i * SIZE + j] != firstCell) {
+                    win = false;
+                    break;
+                }
+            }
+            if (win) return firstCell;
+        }
+
+        // diagonal top left bottom right
+        int diagFirst = cells[0];
+        if (diagFirst != 0) {
+            boolean win = true;
+            for (int i = 1; i < SIZE; i++) {
+                if (cells[i * SIZE + i] != diagFirst) {
+                    win = false;
+                    break;
+                }
+            }
+            if (win) return diagFirst;
+        }
+
+        // diagonal top right bottom left
+        int antiDiagFirst = cells[SIZE - 1];
+        if (antiDiagFirst != 0) {
+            boolean win = true;
+            for (int i = 1; i < SIZE; i++) {
+                if (cells[i * SIZE + (SIZE - 1 - i)] != antiDiagFirst) {
+                    win = false;
+                    break;
+                }
+            }
+            if (win) return antiDiagFirst;
+        }
+
+        return 0; // no winner
     }
 
     void setUpTestBoard(int[] testScenario) {
@@ -77,7 +128,7 @@ public class Board {
     // convert comma-separated string back into board array
     public void deserialize(String data) {
         String[] parts = data.split(",");
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < cells.length; i++) {
             cells[i] = Integer.parseInt(parts[i]);
         }
     }

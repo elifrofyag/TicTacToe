@@ -13,7 +13,7 @@ public class ComputerPlayer extends Player{
 
     @Override
     public boolean makeMove(Board board){
-        for (int i = 1; i <= 9; i++){
+        for (int i = 1; i <= Board.SIZE * Board.SIZE; i++){
             if (board.isAvailable(i)){
                 board.placeMove(i, this.token);
                 break;
